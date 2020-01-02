@@ -16,7 +16,9 @@ import ModalSelector from 'react-native-modal-selector';
 import { CheckBox } from 'react-native-elements';
 import {validateEmail} from '../Services/CommonValidation.js';
 import STRINGS from '../GlobalString/StringData'  // Import StringData.js class for string localization.
-import { View, Text, ToolbarAndroid, Picker, StyleSheet, Image, TextInput, Alert, ScrollView, TouchableOpacity, Dimensions, NetInfo, AsyncStorage, Modal, BackHandler, Platform, Keyboard} from 'react-native';
+import { View, Text, ToolbarAndroid, Picker, StyleSheet, Image, TextInput, Alert, ScrollView, TouchableOpacity, Dimensions, AsyncStorage, Modal, BackHandler, Platform, Keyboard} from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
+
 var GLOBAL = require('../Constants/global'); // used to fetch api's
 var nativeImageSource = require('nativeImageSource');
 import ModalDropdown from 'react-native-modal-dropdown';

@@ -1,28 +1,25 @@
 export default {
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+  },
 
-	container: {
-		flex: 1,
-		flexDirection:'row',
-		alignItems: 'flex-end',
-	},
+  column: {
+    justifyContent: 'space-between',
+  },
 
-	column: {
-		justifyContent: 'space-between',
-	},
+  text: {
+    textAlign: 'center',
+    color: '#CECECE',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
 
-	text: {
-		textAlign:'center',
-		color :'#CECECE',
-		fontSize : 20,
-		fontWeight : 'bold'
-	},
+  row: {},
 
-	row:{
-	},
-	
-	grid: {
-		height:220,
-		backgroundColor :'#444444'
-	}
-
-}
+  grid: {
+    height: 220,
+    backgroundColor: '#444444',
+  },
+};

@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   Image,
+  ImageBackground,
   TextInput,
   Alert,
   ScrollView,
@@ -28,6 +29,13 @@ import DropdownAlert from 'react-native-dropdownalert';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 class Login extends Component {
+  // render() {
+  //   return (
+  //     <View>
+  //       <Text>Hello this is login container</Text>
+  //     </View>
+  //   );
+  // }
   constructor() {
     super();
     // Variable Declaration
@@ -227,7 +235,7 @@ class Login extends Component {
   }
   // Method to move on signUp screen.
   moveToSignUp() {
-    this.props.navigator.push({name: 'SignUp', index: 0});
+    this.props.navigation.navigate('SignUpScreen');
   }
   // Method to move on signUp screen.
   moveToDashboard() {
@@ -275,7 +283,7 @@ class Login extends Component {
             />
           </View>
           <View style={Styles.iphonexHeader} />
-          <Image
+          <ImageBackground
             style={Styles.logoBackgroundStyle}
             source={Images.loginScreenBase}>
             <Image style={Styles.logoBackGround1} source={Images.logoImage} />
@@ -283,7 +291,7 @@ class Login extends Component {
               style={Styles.logoBackGround1}
               source={Images.costFirstText}
             />
-          </Image>
+          </ImageBackground>
 
           <ScrollView style={Styles.scroll_container}>
             <View style={Styles.viewContainer}>

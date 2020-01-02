@@ -6,33 +6,18 @@
  * @flow
  */
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import React, {Component} from 'react';
+import {StatusBar} from 'react-native';
 
-import Login from './App/Containers/Login';
+import AppNavigation from './App/Navigation/AppNavigation';
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Login />
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
-
-const styles = StyleSheet.create({});
+class App extends Component {
+  componentDidMount() {
+    StatusBar.setHidden(true);
+  }
+  render() {
+    return <AppNavigation />;
+  }
+}
 
 export default App;
