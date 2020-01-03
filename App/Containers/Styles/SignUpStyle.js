@@ -243,4 +243,7 @@ export default {
     position: 'absolute',
     resizeMode: 'contain',
   },
+  warn: {
+    color: 'red',
+  },
 };
