@@ -40,7 +40,7 @@ class SignUp1 extends Component {
     this.props.navigator.pop();
   }
   moveToNext() {
-    if (this.state.usernameField == '') {
+    if (this.state.usernameField === '') {
       this.setState({usernameError: STRINGS.t('username_error_message')});
     } else if (
       this.state.usernameField.length < 2 ||
@@ -49,33 +49,33 @@ class SignUp1 extends Component {
       this.setState({usernameError: STRINGS.t('username_char_error_message')});
       var errMsgFlag = '1';
     }
-    if (this.state.password == '') {
+    if (this.state.password === '') {
       this.setState({passwordError: STRINGS.t('blank_password_error_message')});
     }
 
-    if (this.state.password != '') {
+    if (this.state.password !== '') {
       if (this.state.password.length < 6) {
         this.setState({passwordError: STRINGS.t('password_error_message')});
       }
     }
 
-    if (this.state.confirm_password == '') {
+    if (this.state.confirm_password === '') {
       this.setState({
         confirmPasswordError: STRINGS.t('confirm_password_error_message'),
       });
     } else {
-      if (this.state.password != this.state.confirm_password) {
+      if (this.state.password !== this.state.confirm_password) {
         this.setState({confirmPasswordError: STRINGS.t('confirm_password')});
       }
     }
 
     if (
-      this.state.usernameField != '' &&
-      this.state.password != '' &&
+      this.state.usernameField !== '' &&
+      this.state.password !== '' &&
       this.state.password.length >= 6 &&
-      this.state.confirm_password != '' &&
-      this.state.password == this.state.confirm_password &&
-      this.state.usernameError == ''
+      this.state.confirm_password !== '' &&
+      this.state.password === this.state.confirm_password &&
+      this.state.usernameError === ''
     ) {
       AsyncStorage.getItem('UserInfoForReg')
         .then(value => {
@@ -113,12 +113,12 @@ class SignUp1 extends Component {
     );
   }
   callCheckUsernameApi() {
-    if (this.state.usernameField != '') {
+    if (this.state.usernameField !== '') {
       callPostApi(GLOBAL.BASE_URL + GLOBAL.Check_Username, {
         username: this.state.usernameField,
       }).then(response => {
         // Continue your code here...
-        if (result.status == 'success') {
+        if (result.status === 'success') {
         } else {
           this.setState({usernameError: result.message});
         }
@@ -127,7 +127,7 @@ class SignUp1 extends Component {
   }
 
   onChangeUsername(text) {
-    if (text != '') {
+    if (text !== '') {
       this.setState({
         usernameError: '',
       });
@@ -141,8 +141,8 @@ class SignUp1 extends Component {
   }
 
   onChange(fieldVal, fieldName) {
-    if (fieldName == 'usernameError') {
-      if (fieldVal != '') {
+    if (fieldName === 'usernameError') {
+      if (fieldVal !== '') {
         this.setState({
           [fieldName]: '',
         });
@@ -153,8 +153,8 @@ class SignUp1 extends Component {
       }
     }
 
-    if (fieldName == 'passwordError') {
-      if (fieldVal != '') {
+    if (fieldName === 'passwordError') {
+      if (fieldVal !== '') {
         if (fieldVal.length < 6) {
           this.setState({
             [fieldName]: STRINGS.t('password_error_message'),
@@ -171,9 +171,9 @@ class SignUp1 extends Component {
       }
     }
 
-    if (fieldName == 'confirmPasswordError') {
-      if (fieldVal != '') {
-        if (this.state.password != fieldVal) {
+    if (fieldName === 'confirmPasswordError') {
+      if (fieldVal !== '') {
+        if (this.state.password !== fieldVal) {
           this.setState({
             [fieldName]: STRINGS.t('confirm_password'),
           });
@@ -212,22 +212,19 @@ class SignUp1 extends Component {
         </ImageBackground>
         <View style={signUpStyles.backgroundViewContainer}>
           <Text style={signUpStyles.generalInfoStyle}>
-            {' '}
             {STRINGS.t('Account_Information')}
           </Text>
         </View>
-
         <ScrollView style={signUpStyles.keyboardContainer}>
           <View style={signUpStyles.viewContainer}>
             <View style={signUpStyles.textInputBackgroundViewContainer}>
               <Image style={signUpStyles.logoImage} source={Images.username} />
               <TextInput
-                ref="Username"
                 placeholderTextColor={
-                  this.state.usernameError == '' ? '#999999' : 'red'
+                  this.state.usernameError === '' ? '#999999' : 'red'
                 }
                 placeholder={
-                  this.state.usernameError == ''
+                  this.state.usernameError === ''
                     ? STRINGS.t('Username')
                     : this.state.usernameError
                 }
@@ -242,7 +239,7 @@ class SignUp1 extends Component {
                 onEndEditing={this.callCheckUsernameApi.bind(this)}
                 value={this.state.usernameField.toString()}
               />
-              {this.state.usernameError != '' ? (
+              {this.state.usernameError !== '' ? (
                 <Icon
                   onPress={() => this.onIconClick(this.state.usernameError)}
                   name="ios-alert"
@@ -250,28 +247,24 @@ class SignUp1 extends Component {
                 />
               ) : null}
             </View>
-            {this.state.usernameError != '' ? (
+            {this.state.usernameError !== '' ? (
               <View style={signUpStyles.lineErrorView} />
             ) : (
               <View style={signUpStyles.lineView} />
             )}
-
             <View style={signUpStyles.textInputBackgroundViewContainer}>
               <Image style={signUpStyles.logoImage} source={Images.password} />
               <TextInput
-                ref="Password"
-                password={true}
-                secureTextEntry={true}
+                secureTextEntry
                 placeholderTextColor={
-                  this.state.passwordError == '' ? '#999999' : 'red'
+                  this.state.passwordError === '' ? '#999999' : 'red'
                 }
                 placeholder={
-                  this.state.passwordError == ''
+                  this.state.passwordError === ''
                     ? STRINGS.t('Password')
                     : this.state.passwordError
                 }
                 underlineColorAndroid="transparent"
-                secureTextEntry={true}
                 style={signUpStyles.textInput}
                 returnKeyType="next"
                 keyboardType="default"
@@ -281,8 +274,9 @@ class SignUp1 extends Component {
                     this.onChange(val, 'passwordError'),
                   )
                 }
+                value={this.state.password}
               />
-              {this.state.passwordError != '' ? (
+              {this.state.passwordError !== '' ? (
                 <Icon
                   onPress={() => this.onIconClick(this.state.passwordError)}
                   name="ios-alert"
@@ -290,28 +284,24 @@ class SignUp1 extends Component {
                 />
               ) : null}
             </View>
-            {this.state.passwordError != '' ? (
+            {this.state.passwordError !== '' ? (
               <View style={signUpStyles.lineErrorView} />
             ) : (
               <View style={signUpStyles.lineView} />
             )}
-
             <View style={signUpStyles.textInputBackgroundViewContainer}>
               <Image style={signUpStyles.logoImage} source={Images.password} />
               <TextInput
-                ref="passNotmatched"
-                password={true}
-                secureTextEntry={true}
+                secureTextEntry
                 placeholderTextColor={
-                  this.state.confirmPasswordError == '' ? '#999999' : 'red'
+                  this.state.confirmPasswordError === '' ? '#999999' : 'red'
                 }
                 placeholder={
-                  this.state.confirmPasswordError == ''
+                  this.state.confirmPasswordError === ''
                     ? STRINGS.t('Confirm_Password')
                     : this.state.confirmPasswordError
                 }
                 underlineColorAndroid="transparent"
-                secureTextEntry={true}
                 style={signUpStyles.textInput}
                 returnKeyType="next"
                 keyboardType="default"
@@ -321,8 +311,9 @@ class SignUp1 extends Component {
                     this.onChange(val, 'confirmPasswordError'),
                   )
                 }
+                value={this.state.confirm_password}
               />
-              {this.state.confirmPasswordError != '' ? (
+              {this.state.confirmPasswordError !== '' ? (
                 <Icon
                   onPress={() =>
                     this.onIconClick(this.state.confirmPasswordError)
@@ -332,7 +323,7 @@ class SignUp1 extends Component {
                 />
               ) : null}
             </View>
-            {this.state.confirmPasswordError != '' ? (
+            {this.state.confirmPasswordError !== '' ? (
               <View style={signUpStyles.lineErrorView} />
             ) : (
               <View style={signUpStyles.lineView} />
@@ -349,17 +340,14 @@ class SignUp1 extends Component {
             <KeyboardSpacer />
           </View>
         </ScrollView>
-
         <View style={loginStyles.footerParent}>
           <View style={loginStyles.footerlineView} />
           <View style={loginStyles.footerContainer}>
             <Text style={loginStyles.memberStyles}>
-              {' '}
-              {STRINGS.t('Already_Registered')}{' '}
+              {STRINGS.t('Already_Registered')}
             </Text>
             <TouchableOpacity onPress={this.moveToSignIn.bind(this)}>
               <Text style={loginStyles.usernameAndPasswordStyles}>
-                {' '}
                 {STRINGS.t('SIGNIN')}
               </Text>
             </TouchableOpacity>

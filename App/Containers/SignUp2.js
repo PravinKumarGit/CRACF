@@ -86,7 +86,7 @@ class SignUp2 extends Component {
 
   submit() {
     const phone_number = this.state.phone_number.replace(/[^\d.]/g, '');
-    if (this.state.mailing_address == '') {
+    if (this.state.mailing_address === '') {
       this.setState({mailingAddressError: STRINGS.t('mailing_address_error')});
     } else if (
       this.state.mailing_address.length < 2 ||
@@ -97,30 +97,30 @@ class SignUp2 extends Component {
       });
       var errMsgFlag = '1';
     }
-    if (this.state.city == '') {
+    if (this.state.city === '') {
       this.setState({cityError: STRINGS.t('city_error')});
     } else if (this.state.city.length < 2 || this.state.city.length > 120) {
       this.setState({cityError: STRINGS.t('city_char_error')});
       var errMsgFlag = '1';
     }
-    if (this.state.stateField == 'Select State') {
+    if (this.state.stateField === 'Select State') {
       this.setState({stateError: STRINGS.t('state_error')});
       // this.dropdown.alertWithType('error', 'Error', STRINGS.t('state_error'));
     }
-    if (this.state.countyId == '') {
+    if (this.state.countyId === '') {
       this.setState({countryError: STRINGS.t('country_error')});
       //this.dropdown.alertWithType('error', 'Error', STRINGS.t('country_error'));
     }
-    if (this.state.zip_code == '') {
+    if (this.state.zip_code === '') {
       this.setState({zipCodeError: STRINGS.t('zip_code_error')});
     }
-    if (phone_number == '') {
+    if (phone_number === '') {
       this.setState({phoneNumberError: STRINGS.t('phone_number_error')});
     } else if (phone_number.length !== 10) {
       this.setState({phoneNumberError: STRINGS.t('phone_number_char_error')});
       var errMsgFlag = '1';
     }
-    if (this.state.office_address == '') {
+    if (this.state.office_address === '') {
       this.setState({officeAddressError: STRINGS.t('office_address_error')});
     } else if (
       this.state.office_address.length < 2 ||
@@ -131,7 +131,7 @@ class SignUp2 extends Component {
       });
       var errMsgFlag = '1';
     }
-    if (this.state.title_rep_id == '') {
+    if (this.state.title_rep_id === '') {
       this.setState({titleRepError: STRINGS.t('title_rep_error')});
       //this.dropdown.alertWithType('error', 'Error', STRINGS.t('title_rep_error'));
     }
@@ -146,7 +146,7 @@ class SignUp2 extends Component {
       this.state.office_address !== '' &&
       this.state.title_rep_name !== '' &&
       this.state.title_rep_id !== '' &&
-      this.state.zipCodeError == ''
+      this.state.zipCodeError === ''
     ) {
       this.callSaveUserApi();
     }
@@ -178,13 +178,13 @@ class SignUp2 extends Component {
 
       // Continue your code here...
       this.setState({
-        stateArray: result.data,
+        stateArray: response.data,
       });
 
       for (let i = 0; i < this.state.stateArray.length; i++) {
-        state_name = this.state.stateArray[i].statename;
-        state_id = this.state.stateArray[i].id;
-        if (i == 0) {
+        const state_name = this.state.stateArray[i].statename;
+        const state_id = this.state.stateArray[i].id;
+        if (i === 0) {
           this.setState({
             stateId: state_id,
             id_for_select_county: state_id,
@@ -218,14 +218,13 @@ class SignUp2 extends Component {
       stateId: IDofState,
     }).then(response => {
       this.setState({
-        countryArray: result.data,
+        countryArray: response.data,
       });
 
       for (let i = 0; i < this.state.countryArray.length; i++) {
-        county_name = this.state.countryArray[i].countyname;
-        county_id = this.state.countryArray[i].id;
-
-        if (this.state.countyId == county_id) {
+        const county_name = this.state.countryArray[i].countyname;
+        const county_id = this.state.countryArray[i].id;
+        if (this.state.countyId === county_id) {
           this.setState(
             {
               county: county_id,
@@ -234,7 +233,7 @@ class SignUp2 extends Component {
             },
             this.callGetTitleRepApi(this.state.stateId, county_id),
           );
-        } else if (this.state.countyId == '' && i == 0) {
+        } else if (this.state.countyId === '' && i === 0) {
           this.setState(
             {
               county: '',
@@ -261,13 +260,12 @@ class SignUp2 extends Component {
   }
 
   callVerifyZipCodeApi() {
+    let stateField = '';
+    let country = '';
     if (
-      this.state.stateField == 'Select State' &&
-      this.state.country == 'Select County'
+      this.state.stateField !== 'Select State' &&
+      this.state.country !== 'Select County'
     ) {
-      stateField = '';
-      country = '';
-    } else {
       stateField = this.state.stateField;
       country = this.state.country;
     }
@@ -277,12 +275,12 @@ class SignUp2 extends Component {
         stateName: stateField,
         countyName: country,
         zipCode: this.state.zip_code,
-      }).then(response => {
+      }).then(result => {
         // Continue your code here...
-        if (result.status == 'Success') {
+        if (result.status === 'Success') {
           if (
-            this.state.stateField == 'Select State' &&
-            this.state.country == 'Select County'
+            this.state.stateField === 'Select State' &&
+            this.state.country === 'Select County'
           ) {
             if (result.hasOwnProperty('data')) {
               this.setState({
@@ -308,16 +306,13 @@ class SignUp2 extends Component {
   callGetCityCountyStateApi() {
     callPostApi(GLOBAL.BASE_URL + GLOBAL.Get_City_County_State, {
       zipCode: this.state.zip_code,
-    }).then(response => {
+    }).then(result => {
       // Continue your code here...
-      if (result.status == 'success') {
-        let dict = result.data.statecountycity;
+      if (result.status === 'success') {
+        const dict = result.data.statecountycity;
         this.setState({country: dict.County});
         this.setState({stateField: dict.stateName});
         this.setState({city: dict.City});
-        stateId = dict.stateId;
-        countyId = dict.countyId;
-        countryArray = result.data.countyList;
       } else {
         Alert.alert('Alert!', JSON.stringify(result.message));
       }
@@ -329,21 +324,21 @@ class SignUp2 extends Component {
       callPostApi(GLOBAL.BASE_URL + GLOBAL.Get_Title_Rep, {
         stateId: IDofState,
         countyId: IDofCounty,
-      }).then(response => {
+      }).then(result => {
         this.setState({
           titleRepArray: result.data,
         });
 
         for (let i = 0; i < this.state.titleRepArray.length; i++) {
-          title_rep_name = this.state.titleRepArray[i].name;
-          title_rep_id = this.state.titleRepArray[i].id;
+          const title_rep_name = this.state.titleRepArray[i].name;
+          const title_rep_id = this.state.titleRepArray[i].id;
 
-          if (this.state.titleRep == title_rep_id) {
+          if (this.state.titleRep === title_rep_id) {
             this.setState({
               title_rep_name: title_rep_name,
               title_rep_id: title_rep_id,
             });
-          } else if (this.state.titleRep == '' && i == 0) {
+          } else if (this.state.titleRep === '' && i === 0) {
             this.setState({
               title_rep_name: 'Select Title Rep',
               title_rep_id: '',
@@ -398,10 +393,10 @@ class SignUp2 extends Component {
           titlerep: this.state.title_rep_id,
           drenmls: '',
           corporatenmls: '',
-        }).then(response => {
+        }).then(result => {
           //alert(JSON.stringify(result));
           // Continue your code here...
-          if (result.status == 'success') {
+          if (result.status === 'success') {
             this.dropdown.alertWithType('success', 'Success', result.message);
           }
         });
@@ -411,7 +406,7 @@ class SignUp2 extends Component {
 
   onChangePhone(fieldVal, fieldName) {
     fieldVal = fieldVal.replace(/[^\d.]/g, '');
-    if (fieldVal == '') {
+    if (fieldVal === '') {
       this.setState({
         [fieldName]: STRINGS.t('phone_number_error'),
       });
@@ -428,7 +423,7 @@ class SignUp2 extends Component {
   }
 
   onChangeState(option) {
-    if (option.label == 'Select State') {
+    if (option.label === 'Select State') {
       this.setState({
         user_state: option.label,
         countyDisable: true,
@@ -445,7 +440,7 @@ class SignUp2 extends Component {
       stateField: option.label,
     });
 
-    if (option.label == 'Select State') {
+    if (option.label === 'Select State') {
       this.setState(
         {
           stateId: option.key,
@@ -471,7 +466,7 @@ class SignUp2 extends Component {
   }
 
   onChangeCounty(option) {
-    if (option.label == 'Select County') {
+    if (option.label === 'Select County') {
       this.setState({
         titleRepDisable: true,
       });
@@ -480,13 +475,12 @@ class SignUp2 extends Component {
         titleRepDisable: false,
       });
     }
-    countyId = option.key;
     this.setState(
       {
         user_county: option.label,
         country: option.label,
-        county: countyId,
-        countyId: countyId,
+        county: option.key,
+        countyId: option.key,
         titleRep: '',
         countryError: '',
         zip_code: '',
@@ -496,23 +490,22 @@ class SignUp2 extends Component {
   }
 
   onTitleRepChange(option) {
-    titleRepId = option.key;
     this.setState({
       title_rep_name: option.label,
       titleRepError: '',
     });
-    this.state.title_rep_id = titleRepId;
+    this.state.title_rep_id = option.key;
   }
 
   onClose(data) {
-    if (data.type == 'success') {
+    if (data.type === 'success') {
       this.setState({animating: 'false'});
       this.props.navigator.push({name: 'Login', index: 0});
     }
   }
 
   onChange(fieldVal, fieldName) {
-    if (fieldName == 'mailingAddressError') {
+    if (fieldName === 'mailingAddressError') {
       if (fieldVal !== '') {
         this.setState({
           [fieldName]: '',
@@ -524,7 +517,7 @@ class SignUp2 extends Component {
       }
     }
 
-    if (fieldName == 'cityError') {
+    if (fieldName === 'cityError') {
       if (fieldVal !== '') {
         this.setState({
           [fieldName]: '',
@@ -536,7 +529,7 @@ class SignUp2 extends Component {
       }
     }
 
-    if (fieldName == 'zipCodeError') {
+    if (fieldName === 'zipCodeError') {
       if (fieldVal !== '') {
         this.setState({
           [fieldName]: '',
@@ -548,7 +541,7 @@ class SignUp2 extends Component {
       }
     }
 
-    if (fieldName == 'officeAddressError') {
+    if (fieldName === 'officeAddressError') {
       if (fieldVal !== '') {
         this.setState({
           [fieldName]: '',
@@ -566,7 +559,7 @@ class SignUp2 extends Component {
   }
 
   render() {
-    if (this.state.animating == 'true') {
+    if (this.state.animating === 'true') {
       this.state.visble = true;
     } else {
       this.state.visble = false;
@@ -608,15 +601,14 @@ class SignUp2 extends Component {
               />
               <TextInput
                 placeholderTextColor={
-                  this.state.mailingAddressError == '' ? '#999999' : 'red'
+                  this.state.mailingAddressError === '' ? '#999999' : 'red'
                 }
                 placeholder={
-                  this.state.mailingAddressError == ''
+                  this.state.mailingAddressError === ''
                     ? STRINGS.t('Mailing_Address')
                     : this.state.mailingAddressError
                 }
                 underlineColorAndroid="transparent"
-                secureTextEntry={false}
                 style={signUpStyles.textInput}
                 returnKeyType="next"
                 keyboardType="email-address"
@@ -634,7 +626,7 @@ class SignUp2 extends Component {
                     this.onIconClick(this.state.mailingAddressError)
                   }
                   name="ios-alert"
-                  style={{color: 'red'}}
+                  style={signUpStyles.warn}
                 />
               ) : null}
             </View>
@@ -651,10 +643,10 @@ class SignUp2 extends Component {
               />
               <TextInput
                 placeholderTextColor={
-                  this.state.cityError == '' ? '#999999' : 'red'
+                  this.state.cityError === '' ? '#999999' : 'red'
                 }
                 placeholder={
-                  this.state.cityError == ''
+                  this.state.cityError === ''
                     ? STRINGS.t('City')
                     : this.state.cityError
                 }
@@ -675,7 +667,7 @@ class SignUp2 extends Component {
                 <Icon
                   onPress={() => this.onIconClick(this.state.cityError)}
                   name="ios-alert"
-                  style={{color: 'red'}}
+                  style={signUpStyles.warn}
                 />
               ) : null}
             </View>
@@ -770,11 +762,11 @@ class SignUp2 extends Component {
               <TextInput
                 ref="ZipCode"
                 placeholderTextColor={
-                  this.state.zipCodeError == '' ? '#999999' : 'red'
+                  this.state.zipCodeError === '' ? '#999999' : 'red'
                 }
                 maxLength={5}
                 placeholder={
-                  this.state.zipCodeError == ''
+                  this.state.zipCodeError === ''
                     ? STRINGS.t('Zip_Code')
                     : this.state.zipCodeError
                 }
@@ -813,10 +805,10 @@ class SignUp2 extends Component {
               />
               <TextInput
                 placeholderTextColor={
-                  this.state.phoneNumberError == '' ? '#999999' : 'red'
+                  this.state.phoneNumberError === '' ? '#999999' : 'red'
                 }
                 placeholder={
-                  this.state.phoneNumberError == ''
+                  this.state.phoneNumberError === ''
                     ? STRINGS.t('Phone_Number')
                     : this.state.phoneNumberError
                 }
@@ -840,7 +832,7 @@ class SignUp2 extends Component {
                 <Icon
                   onPress={() => this.onIconClick(this.state.phoneNumberError)}
                   name="ios-alert"
-                  style={{color: 'red'}}
+                  style={signUpStyles.warn}
                 />
               ) : null}
             </View>
@@ -857,10 +849,10 @@ class SignUp2 extends Component {
               />
               <TextInput
                 placeholderTextColor={
-                  this.state.officeAddressError == '' ? '#999999' : 'red'
+                  this.state.officeAddressError === '' ? '#999999' : 'red'
                 }
                 placeholder={
-                  this.state.officeAddressError == ''
+                  this.state.officeAddressError === ''
                     ? STRINGS.t('Office_Address')
                     : this.state.officeAddressError
                 }
@@ -882,7 +874,7 @@ class SignUp2 extends Component {
                     this.onIconClick(this.state.officeAddressError)
                   }
                   name="ios-alert"
-                  style={{color: 'red'}}
+                  style={signUpStyles.warn}
                 />
               ) : null}
             </View>
