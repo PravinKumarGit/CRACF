@@ -1,6 +1,6 @@
-import {Dimensions, Platform} from 'react-native';
+import {Dimensions} from 'react-native';
 import {ifIphoneX} from 'react-native-iphone-x-helper';
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 export default {
   textInputBackgroundViewContainer: {
@@ -10,13 +10,13 @@ export default {
     alignSelf: 'center',
     alignItems: 'center',
     height: 50,
-    width: '100%' - 20,
+    width: width - 20,
     backgroundColor: 'transparent',
   },
   lineView: {
     justifyContent: 'center',
     height: 0.5,
-    width: '100%',
+    width: width,
     backgroundColor: '#949494',
   },
   buttonContainer: {
@@ -25,7 +25,7 @@ export default {
     backgroundColor: '#0c74c5',
     marginTop: 20,
     height: 50,
-    width: '100%',
+    width: width,
   },
   style_btnLogin: {
     justifyContent: 'center',
@@ -38,7 +38,7 @@ export default {
     ...ifIphoneX(
       {
         height: 44,
-        width: '100%',
+        width: width,
         backgroundColor: '#1683c0',
       },
       {
@@ -50,7 +50,7 @@ export default {
     ...ifIphoneX(
       {
         height: 34,
-        width: '100%',
+        width: width,
         backgroundColor: '#1683c0',
       },
       {

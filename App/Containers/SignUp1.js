@@ -1,3 +1,6 @@
+/**
+ * @description Step 2 of signup
+ */
 import React, {Component} from 'react';
 import {
   View,
@@ -5,24 +8,30 @@ import {
   ImageBackground,
   Image,
   TextInput,
-  Alert,
   ScrollView,
   TouchableOpacity,
   AsyncStorage,
 } from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
+import {Icon} from 'native-base';
+import DropdownAlert from 'react-native-dropdownalert';
+import {NavigationActions, StackActions} from 'react-navigation';
 
-import signUpStyles from './Styles/SignUpStyle'; // Import SignUpStyle.js class from Styles Folder to maintain UI.
-import loginStyles from './Styles/LoginScreenStyle'; // Import LoginScreenStyle.js class from Styles Folder to maintain UI.
-import Images from '../Themes/Images.js'; // Import Images.js class from Image Folder for images.
-import STRINGS from '../GlobalString/StringData'; // Import StringData.js class for string localization.
+import signUpStyles from './Styles/SignUpStyle';
+import loginStyles from './Styles/LoginScreenStyle';
+import Images from '../Themes/Images.js';
+import STRINGS from '../GlobalString/StringData';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import Styles from './Styles/SellerStyleDesign';
-var GLOBAL = require('../Constants/global');
-import {callPostApi} from '../Services/webApiHandler.js'; // Import webApiHandler.js class for calling api.
-import {Container, Content, InputGroup, Input, Icon} from 'native-base';
-import DropdownAlert from 'react-native-dropdownalert';
-var Header = require('./HomeHeader');
+import GLOBAL from '../Constants/global';
+import {callPostApi} from '../Services/webApiHandler';
+const NAVIGATION_TO_LOGIN = StackActions.reset({
+  index: 0,
+  actions: [
+    NavigationActions.navigate({
+      routeName: 'loginScreen',
+    }),
+  ],
+});
 class SignUp1 extends Component {
   state = {
     usernameField: '',
@@ -32,12 +41,11 @@ class SignUp1 extends Component {
     password: '',
     confirm_password: '',
   };
-  // Method to move on signIn screen.
   moveToSignIn() {
-    this.props.navigator.popToTop();
+    this.props.navigation.dispatch(NAVIGATION_TO_LOGIN);
   }
   moveToPrevious() {
-    this.props.navigator.pop();
+    this.props.navigation.goBack();
   }
   moveToNext() {
     if (this.state.usernameField === '') {
@@ -47,7 +55,6 @@ class SignUp1 extends Component {
       this.state.usernameField.length > 20
     ) {
       this.setState({usernameError: STRINGS.t('username_char_error_message')});
-      var errMsgFlag = '1';
     }
     if (this.state.password === '') {
       this.setState({passwordError: STRINGS.t('blank_password_error_message')});
@@ -94,30 +101,11 @@ class SignUp1 extends Component {
     }
   }
 
-  componentDidMount() {
-    NetInfo.isConnected.addEventListener(
-      'connectionChange',
-      this._handleConnectivityChange,
-    );
-  }
-  componentWillUnmount() {
-    NetInfo.isConnected.removeEventListener(
-      'connectionChange',
-      this._handleConnectivityChange,
-    );
-  }
-  _handleConnectivityChange(status) {
-    console.log(
-      '*********_handleConnectivityChange: Network Connectivity status *******: ' +
-        status,
-    );
-  }
   callCheckUsernameApi() {
     if (this.state.usernameField !== '') {
       callPostApi(GLOBAL.BASE_URL + GLOBAL.Check_Username, {
         username: this.state.usernameField,
-      }).then(response => {
-        // Continue your code here...
+      }).then(result => {
         if (result.status === 'success') {
         } else {
           this.setState({usernameError: result.message});
@@ -136,8 +124,7 @@ class SignUp1 extends Component {
         usernameError: STRINGS.t('username_error_message'),
       });
     }
-    newText = text.replace(/[^\w\s]/gi, '');
-    return newText;
+    return text.replace(/[^\w\s]/gi, '');
   }
 
   onChange(fieldVal, fieldName) {

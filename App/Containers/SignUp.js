@@ -5,21 +5,21 @@ import {
   ImageBackground,
   Image,
   TextInput,
-  Alert,
   ScrollView,
   TouchableOpacity,
   AsyncStorage,
 } from 'react-native';
-import signUpStyles from './Styles/SignUpStyle'; // Import SignUpStyle.js class from Styles Folder to maintain UI.
-import loginStyles from './Styles/LoginScreenStyle'; // Import LoginScreenStyle.js class from Styles Folder to maintain UI.
-import Images from '../Themes/Images.js'; // Import Images.js class from Image Folder for images.
-import STRINGS from '../GlobalString/StringData'; // Import StringData.js class for string localization.
+import {Icon} from 'native-base';
+import DropdownAlert from 'react-native-dropdownalert';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+
+import signUpStyles from './Styles/SignUpStyle';
+import loginStyles from './Styles/LoginScreenStyle';
+import Images from '../Themes/Images.js';
+import STRINGS from '../GlobalString/StringData';
 import {validateEmail} from '../Services/CommonValidation.js';
 import Styles from './Styles/SellerStyleDesign';
-import {Container, Content, InputGroup, Input, Icon} from 'native-base';
-import DropdownAlert from 'react-native-dropdownalert';
-var Header = require('./HomeHeader');
+
 class SignUp extends Component {
   state = {
     first_name: '',
@@ -31,14 +31,12 @@ class SignUp extends Component {
     email_address: '',
     confirm_email_address: '',
   };
-  // Method to move on signUp screen.
   moveToSignIn() {
     this.props.navigation.goBack();
   }
 
-  // after click on move forward arrow to submit first form of signup
   moveToNextSignUp() {
-    if (this.state.first_name == '') {
+    if (this.state.first_name === '') {
       this.setState({firstNameError: STRINGS.t('first_name_error_message')});
     } else if (
       this.state.first_name.length < 2 ||
@@ -47,33 +45,30 @@ class SignUp extends Component {
       this.setState({
         firstNameError: STRINGS.t('first_name_char_error_message'),
       });
-      var errMsgFlag = '1';
     } else {
       this.setState({firstNameError: ''});
     }
-    if (this.state.last_name == '') {
+    if (this.state.last_name === '') {
       this.setState({lastNameError: STRINGS.t('last_name_error_message')});
     } else if (
       this.state.last_name.length < 2 ||
       this.state.last_name.length > 50
     ) {
       this.setState({lastNameError: STRINGS.t('last_name_char_error_message')});
-      var errMsgFlag = '1';
     } else {
       this.setState({lastNameError: ''});
     }
-    if (this.state.email_address == '') {
+    if (this.state.email_address === '') {
       this.setState({emailAddressError: STRINGS.t('email_error_message')});
     } else if (
       this.state.email_address.length < 2 ||
       this.state.email_address.length > 100
     ) {
       this.setState({emailAddressError: STRINGS.t('email_char_error_message')});
-      var errMsgFlag = '1';
     } else {
       this.setState({emailAddressError: ''});
     }
-    if (this.state.email_address != '') {
+    if (this.state.email_address !== '') {
       if (!validateEmail(this.state.email_address)) {
         this.setState({
           emailAddressError: STRINGS.t('validation_email_error_message'),
@@ -82,12 +77,12 @@ class SignUp extends Component {
         this.setState({emailAddressError: ''});
       }
     }
-    if (this.state.confirm_email_address == '') {
+    if (this.state.confirm_email_address === '') {
       this.setState({
         confirmEmailAddressError: STRINGS.t('confirm_email_error_message'),
       });
     } else {
-      if (this.state.email_address != this.state.confirm_email_address) {
+      if (this.state.email_address !== this.state.confirm_email_address) {
         this.setState({confirmEmailAddressError: STRINGS.t('confirm_email')});
       } else {
         this.setState({confirmEmailAddressError: ''});
@@ -95,14 +90,14 @@ class SignUp extends Component {
     }
 
     if (
-      this.state.first_name != '' &&
-      this.state.last_name != '' &&
-      this.state.email_address != '' &&
-      this.state.confirm_email_address != '' &&
+      this.state.first_name !== '' &&
+      this.state.last_name !== '' &&
+      this.state.email_address !== '' &&
+      this.state.confirm_email_address !== '' &&
       validateEmail(this.state.email_address) &&
-      this.state.email_address == this.state.confirm_email_address
+      this.state.email_address === this.state.confirm_email_address
     ) {
-      var dict = {
+      const dict = {
         fname: this.state.first_name,
         lname: this.state.last_name,
         email: this.state.email_address,
@@ -113,35 +108,38 @@ class SignUp extends Component {
   }
 
   onChange(fieldVal, fieldName) {
-    if (fieldName == 'firstNameError') {
-      if (fieldVal != '') {
+    if (fieldName === 'firstNameError') {
+      if (fieldVal !== '') {
         this.setState({
           [fieldName]: '',
         });
       } else {
         this.setState({
           [fieldName]: STRINGS.t('first_name_error_message'),
+          ['last_name']: '',
         });
       }
     }
 
-    if (fieldName == 'lastNameError') {
-      if (fieldVal != '') {
+    if (fieldName === 'lastNameError') {
+      if (fieldVal !== '') {
         this.setState({
           [fieldName]: '',
         });
       } else {
         this.setState({
           [fieldName]: STRINGS.t('last_name_error_message'),
+          ['first_name']: '',
         });
       }
     }
 
-    if (fieldName == 'emailAddressError') {
-      if (fieldVal != '') {
+    if (fieldName === 'emailAddressError') {
+      if (fieldVal !== '') {
         if (!validateEmail(fieldVal)) {
           this.setState({
             [fieldName]: STRINGS.t('validation_email_error_message'),
+            ['email_address']: '',
           });
         } else {
           this.setState({
@@ -149,7 +147,7 @@ class SignUp extends Component {
           });
         }
       } else {
-        if (fieldVal == '') {
+        if (fieldVal === '') {
           this.setState({
             [fieldName]: STRINGS.t('email_error_message'),
           });
@@ -157,7 +155,6 @@ class SignUp extends Component {
           this.setState({
             [fieldName]: STRINGS.t('email_char_error_message'),
           });
-          var errMsgFlag = '1';
         } else {
           this.setState({
             [fieldName]: '',
@@ -166,11 +163,12 @@ class SignUp extends Component {
       }
     }
 
-    if (fieldName == 'confirmEmailAddressError') {
-      if (fieldVal != '') {
-        if (this.state.email_address != fieldVal) {
+    if (fieldName === 'confirmEmailAddressError') {
+      if (fieldVal !== '') {
+        if (this.state.email_address !== fieldVal) {
           this.setState({
             [fieldName]: STRINGS.t('confirm_email'),
+            ['confirm_email_address']: '',
           });
         } else {
           this.setState({
@@ -208,7 +206,6 @@ class SignUp extends Component {
 
         <View style={signUpStyles.backgroundViewContainer}>
           <Text style={signUpStyles.generalInfoStyle}>
-            {' '}
             {STRINGS.t('General_Information')}
           </Text>
         </View>
@@ -219,10 +216,10 @@ class SignUp extends Component {
               <Image style={signUpStyles.logoImage} source={Images.username} />
               <TextInput
                 placeholderTextColor={
-                  this.state.firstNameError == '' ? '#999999' : 'red'
+                  this.state.firstNameError === '' ? '#999999' : 'red'
                 }
                 placeholder={
-                  this.state.firstNameError == ''
+                  this.state.firstNameError === ''
                     ? STRINGS.t('first_name')
                     : this.state.firstNameError
                 }
@@ -231,14 +228,13 @@ class SignUp extends Component {
                 style={signUpStyles.textInput}
                 returnKeyType="next"
                 keyboardType="email-address"
-                onChangeText={val =>
-                  this.setState(
-                    {first_name: val},
-                    this.onChange(val, 'firstNameError'),
-                  )
+                onChangeText={val => this.setState({first_name: val})}
+                onBlur={() =>
+                  this.onChange(this.state.first_name, 'firstNameError')
                 }
+                value={this.state.first_name}
               />
-              {this.state.firstNameError != '' ? (
+              {this.state.firstNameError !== '' ? (
                 <Icon
                   onPress={() => this.onIconClick(this.state.firstNameError)}
                   name="ios-alert"
@@ -246,7 +242,7 @@ class SignUp extends Component {
                 />
               ) : null}
             </View>
-            {this.state.firstNameError != '' ? (
+            {this.state.firstNameError !== '' ? (
               <View style={signUpStyles.lineErrorView} />
             ) : (
               <View style={signUpStyles.lineView} />
@@ -256,10 +252,10 @@ class SignUp extends Component {
               <Image style={signUpStyles.logoImage} source={Images.username} />
               <TextInput
                 placeholderTextColor={
-                  this.state.lastNameError == '' ? '#999999' : 'red'
+                  this.state.lastNameError === '' ? '#999999' : 'red'
                 }
                 placeholder={
-                  this.state.lastNameError == ''
+                  this.state.lastNameError === ''
                     ? STRINGS.t('last_name')
                     : this.state.lastNameError
                 }
@@ -268,14 +264,13 @@ class SignUp extends Component {
                 style={signUpStyles.textInput}
                 returnKeyType="next"
                 keyboardType="email-address"
-                onChangeText={val =>
-                  this.setState(
-                    {last_name: val},
-                    this.onChange(val, 'lastNameError'),
-                  )
+                onChangeText={val => this.setState({last_name: val})}
+                onBlur={() =>
+                  this.onChange(this.state.last_name, 'lastNameError')
                 }
+                value={this.state.last_name}
               />
-              {this.state.lastNameError != '' ? (
+              {this.state.lastNameError !== '' ? (
                 <Icon
                   onPress={() => this.onIconClick(this.state.lastNameError)}
                   name="ios-alert"
@@ -283,7 +278,7 @@ class SignUp extends Component {
                 />
               ) : null}
             </View>
-            {this.state.lastNameError != '' ? (
+            {this.state.lastNameError !== '' ? (
               <View style={signUpStyles.lineErrorView} />
             ) : (
               <View style={signUpStyles.lineView} />
@@ -293,10 +288,10 @@ class SignUp extends Component {
               <TextInput
                 ref="emailAddress"
                 placeholderTextColor={
-                  this.state.emailAddressError == '' ? '#999999' : 'red'
+                  this.state.emailAddressError === '' ? '#999999' : 'red'
                 }
                 placeholder={
-                  this.state.emailAddressError == ''
+                  this.state.emailAddressError === ''
                     ? STRINGS.t('email_address')
                     : this.state.emailAddressError
                 }
@@ -305,14 +300,13 @@ class SignUp extends Component {
                 style={signUpStyles.textInput}
                 returnKeyType="next"
                 keyboardType="email-address"
-                onChangeText={val =>
-                  this.setState(
-                    {email_address: val},
-                    this.onChange(val, 'emailAddressError'),
-                  )
+                onChangeText={val => this.setState({email_address: val})}
+                onBlur={() =>
+                  this.onChange(this.state.email_address, 'emailAddressError')
                 }
+                value={this.state.email_address}
               />
-              {this.state.emailAddressError != '' ? (
+              {this.state.emailAddressError !== '' ? (
                 <Icon
                   onPress={() => this.onIconClick(this.state.emailAddressError)}
                   name="ios-alert"
@@ -320,7 +314,7 @@ class SignUp extends Component {
                 />
               ) : null}
             </View>
-            {this.state.emailAddressError != '' ? (
+            {this.state.emailAddressError !== '' ? (
               <View style={signUpStyles.lineErrorView} />
             ) : (
               <View style={signUpStyles.lineView} />
@@ -331,10 +325,10 @@ class SignUp extends Component {
               <TextInput
                 ref="confirmEmailAddress"
                 placeholderTextColor={
-                  this.state.confirmEmailAddressError == '' ? '#999999' : 'red'
+                  this.state.confirmEmailAddressError === '' ? '#999999' : 'red'
                 }
                 placeholder={
-                  this.state.confirmEmailAddressError == ''
+                  this.state.confirmEmailAddressError === ''
                     ? STRINGS.t('confirm_email_address')
                     : this.state.confirmEmailAddressError
                 }
@@ -344,13 +338,17 @@ class SignUp extends Component {
                 returnKeyType="default"
                 keyboardType="email-address"
                 onChangeText={val =>
-                  this.setState(
-                    {confirm_email_address: val},
-                    this.onChange(val, 'confirmEmailAddressError'),
+                  this.setState({confirm_email_address: val})
+                }
+                onBlur={() =>
+                  this.onChange(
+                    this.state.confirm_email_address,
+                    'confirmEmailAddressError',
                   )
                 }
+                value={this.state.confirm_email_address}
               />
-              {this.state.confirmEmailAddressError != '' ? (
+              {this.state.confirmEmailAddressError !== '' ? (
                 <Icon
                   onPress={() =>
                     this.onIconClick(this.state.confirmEmailAddressError)
@@ -360,7 +358,7 @@ class SignUp extends Component {
                 />
               ) : null}
             </View>
-            {this.state.confirmEmailAddressError != '' ? (
+            {this.state.confirmEmailAddressError !== '' ? (
               <View style={signUpStyles.lineErrorView} />
             ) : (
               <View style={signUpStyles.lineView} />
@@ -380,12 +378,10 @@ class SignUp extends Component {
           <View style={loginStyles.footerlineView} />
           <View style={loginStyles.footerContainer}>
             <Text style={loginStyles.memberStyles}>
-              {' '}
-              {STRINGS.t('Already_Registered')}{' '}
+              {STRINGS.t('Already_Registered')}
             </Text>
             <TouchableOpacity onPress={this.moveToSignIn.bind(this)}>
               <Text style={loginStyles.usernameAndPasswordStyles}>
-                {' '}
                 {STRINGS.t('SIGNIN')}
               </Text>
             </TouchableOpacity>

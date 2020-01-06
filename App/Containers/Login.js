@@ -1,64 +1,51 @@
+/**
+ * @description Login container
+ */
+
 import React, {Component} from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   Image,
   ImageBackground,
   TextInput,
   Alert,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
   AsyncStorage,
   BackHandler,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
-import Images from '../Themes/Images.js'; // Import Images.js class from Image Folder for images.
-import Styles from './Styles/LoginScreenStyle'; // Import LoginScreenStyle.js class from Styles Folder to maintain UI.
-import STRINGS from '../GlobalString/StringData'; // Import StringData.js class for string localization.
-import {callPostApi} from '../Services/webApiHandler.js'; // Import webApiHandler.js class for calling api.
-import ActivityIndicator from '../Containers/ActivityIndicator'; // Import ActivityIndicator class.
-var GLOBAL = require('../Constants/global'); // Import Global class for getting URLs.
-import KeyboardSpacer from 'react-native-keyboard-spacer'; // Import keyboard spacer class for handling keyboard.
-import {validateEmail} from '../Services/CommonValidation.js'; // Import CommonValidation class to access common methods for validations.
-import {Container, Content, InputGroup, Input, Icon} from 'native-base';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import {Icon} from 'native-base';
 import CheckBox from 'react-native-checkbox';
-export const PERSISTENT_LOGIN = 'persistent-login';
 import DropdownAlert from 'react-native-dropdownalert';
+import {NavigationActions, StackActions} from 'react-navigation';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-class Login extends Component {
-  // render() {
-  //   return (
-  //     <View>
-  //       <Text>Hello this is login container</Text>
-  //     </View>
-  //   );
-  // }
-  constructor() {
-    super();
-    // Variable Declaration
-    this.state = {
-      username: '',
-      usernameError: '',
-      passwordError: '',
-      password: '',
-      animating: false,
-      showError: false,
-      connectionInfo: '',
-      visble: false,
-      showPage: 'false',
-      persistentlogin: false,
-    };
+import Images from '../Themes/Images.js';
+import Styles from './Styles/LoginScreenStyle';
+import STRINGS from '../GlobalString/StringData';
+import {callPostApi} from '../Services/webApiHandler.js';
+import GLOBAL from '../Constants/global';
 
-    this.handleFirstConnectivityChange = this.handleFirstConnectivityChange.bind(
-      this,
-    );
-  }
-  // Method calls when login button pressed and after validation of all fields, call login api.
-  onLoginPress() {
-    if (this.state.connectionInfo != 'none') {
+const PERSISTENT_LOGIN = 'persistent-login';
+
+class Login extends Component {
+  state = {
+    username: '',
+    usernameError: '',
+    passwordError: '',
+    password: '',
+    animating: false,
+    showError: false,
+    connectionInfo: '',
+    visble: false,
+    showPage: 'false',
+    persistentlogin: false,
+  };
+  onLoginPress = () => {
+    if (this.state.connectionInfo !== 'none') {
       this.setState({animating: true}, this.callValidation);
     } else {
       this.dropdown.alertWithType(
@@ -67,17 +54,17 @@ class Login extends Component {
         'Please check your internet connection.',
       );
     }
-  }
+  };
 
-  callValidation() {
-    if (this.state.username == '') {
+  callValidation = () => {
+    if (this.state.username === '') {
       this.setState({usernameError: STRINGS.t('username_error_message')});
 
       this.setState({username: ''});
     } else {
       this.setState({usernameError: ''});
     }
-    if (this.state.password == '') {
+    if (this.state.password === '') {
       this.setState({
         passwordError: STRINGS.t('blank_password_acc_error_message'),
       });
@@ -87,12 +74,12 @@ class Login extends Component {
     } else {
       this.setState({passwordError: ''});
     }
-    if (this.state.username != '' && this.state.password.length >= 6) {
+    if (this.state.username !== '' && this.state.password.length >= 6) {
       this.callapi();
     } else {
       this.setState({animating: false});
     }
-  }
+  };
 
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
@@ -103,11 +90,12 @@ class Login extends Component {
 
     AsyncStorage.getItem(PERSISTENT_LOGIN).then(resultpl => {
       if (resultpl !== null && resultpl !== 'false') {
-        val = false;
-        AsyncStorage.setItem('speakToTextVal', JSON.stringify(val)).then(() => {
-          console.log('Done');
-        });
-        this.props.navigator.push({name: 'Dashboard', index: 0});
+        AsyncStorage.setItem('speakToTextVal', JSON.stringify(false)).then(
+          () => {
+            console.log('Done');
+          },
+        );
+        this.navigationTo('DashboardScreen');
       } else {
         this.setState({
           showPage: 'true',
@@ -116,34 +104,20 @@ class Login extends Component {
     });
 
     AsyncStorage.getItem('username').then(resultpl => {
-      //alert("login page " + JSON.stringify(resultpl));
       if (resultpl !== null && resultpl !== '') {
-        newstr = resultpl.replace(/\\/g, '');
-        //alert(resultpl);
-
-        //this.state.username = newstr;
         this.setState({
-          username: newstr,
+          username: resultpl.replace(/\\/g, ''),
         });
       }
     });
   }
 
-  handleFirstConnectivityChange(connectionInfo) {
-    this.setState({
-      connectionInfo: connectionInfo.type,
-    });
-    console.log(
-      'First change, type: ' +
-        connectionInfo.type +
-        ', effectiveType: ' +
-        connectionInfo.effectiveType,
-    );
-
-    if (connectionInfo.type != 'none') {
+  handleFirstConnectivityChange = connectionInfo => {
+    this.setState({connectionInfo: connectionInfo.type});
+    if (connectionInfo.type !== 'none') {
       this.setState({animating: 'false'}, this.componentDidMount);
     }
-  }
+  };
 
   componentWillMount() {
     NetInfo.getConnectionInfo().then(connectionInfo => {
@@ -172,9 +146,9 @@ class Login extends Component {
     );
   }
 
-  handleBackButtonClick() {
+  handleBackButtonClick = () => {
     return false;
-  }
+  };
 
   backPressed = () => {
     Alert.alert(
@@ -200,24 +174,21 @@ class Login extends Component {
         status,
     );
   }
-  // Methods call for Login
   callapi() {
     callPostApi(GLOBAL.BASE_URL + GLOBAL.Login_Api, {
       email: this.state.username,
       password: this.state.password,
-    }).then(response => {
-      console.log('login user details ' + JSON.stringify(result));
-      // Continue your code here...
+    }).then(result => {
       this.setState({animating: false});
-      if (result.status == 'success') {
+      if (result.status === 'success') {
         this.setState({passwordError: ''});
         this.setState({usernameError: ''});
         AsyncStorage.setItem(
           PERSISTENT_LOGIN,
           this.state.persistentlogin.toString(),
         );
-        AsyncStorage.setItem('userDetail', JSON.stringify(result.data)); //Save user detail in local storage
-        this.moveToDashboard();
+        AsyncStorage.setItem('userDetail', JSON.stringify(result.data));
+        this.navigationTo('DashboardScreen');
       } else {
         this.setState({passwordError: ''});
         this.setState({usernameError: ''});
@@ -225,7 +196,7 @@ class Login extends Component {
       }
     });
   }
-  // Method to get saved data from local storage
+
   getSavedData() {
     AsyncStorage.getItem('userDetail')
       .then(value => {
@@ -233,25 +204,24 @@ class Login extends Component {
       })
       .done();
   }
-  // Method to move on signUp screen.
   moveToSignUp() {
     this.props.navigation.navigate('SignUpScreen');
   }
-  // Method to move on signUp screen.
-  moveToDashboard() {
-    this.props.navigator.push({name: 'Dashboard', index: 0});
-  }
-  // Method to move on signUp screen.
-  moveToForgotPassword() {
-    this.props.navigator.push({name: 'ForgotPassword', index: 0});
-  }
-  // Method to move on signUp screen.
-  moveToForgotUsername() {
-    this.props.navigator.push({name: 'ForgotUsername', index: 0});
+  navigationTo(screenName) {
+    this.props.navigation.dispatch(
+      StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({
+            routeName: screenName,
+          }),
+        ],
+      }),
+    );
   }
 
   onRememberMe(val) {
-    if (val == true) {
+    if (val === true) {
       this.state.persistentlogin = true;
     } else {
       this.state.persistentlogin = false;
@@ -264,7 +234,7 @@ class Login extends Component {
 
   // Default render method and create UI for Login Screen
   render() {
-    if (this.state.animating == true) {
+    if (this.state.animating === true) {
       this.state.scrollvalue = false;
       this.state.visble = true;
     } else {
@@ -272,7 +242,7 @@ class Login extends Component {
       this.state.visble = false;
     }
     let showable;
-    if (this.state.showPage == 'true') {
+    if (this.state.showPage === 'true') {
       showable = (
         <View style={Styles.backgroundImage}>
           <View>
@@ -301,10 +271,10 @@ class Login extends Component {
                   ref={'Username'}
                   value={this.state.username.toString()}
                   placeholderTextColor={
-                    this.state.usernameError == '' ? '#999999' : 'red'
+                    this.state.usernameError === '' ? '#999999' : 'red'
                   }
                   placeholder={
-                    this.state.usernameError == ''
+                    this.state.usernameError === ''
                       ? STRINGS.t('Username')
                       : this.state.usernameError
                   }
@@ -317,7 +287,7 @@ class Login extends Component {
                     this.setState({username: val, usernameError: ''})
                   }
                 />
-                {this.state.usernameError != '' ? (
+                {this.state.usernameError !== '' ? (
                   <Icon
                     name="ios-alert"
                     onPress={() => this.onIconClick(this.state.usernameError)}
@@ -326,7 +296,7 @@ class Login extends Component {
                 ) : null}
               </View>
               <View style={Styles.lineViewTextBox} />
-              {this.state.usernameError != '' ? (
+              {this.state.usernameError !== '' ? (
                 <View style={Styles.lineErrorView} />
               ) : (
                 <View style={Styles.lineView} />
@@ -337,10 +307,10 @@ class Login extends Component {
                   ref={'Password'}
                   value={this.state.password.toString()}
                   placeholderTextColor={
-                    this.state.passwordError == '' ? '#999999' : 'red'
+                    this.state.passwordError === '' ? '#999999' : 'red'
                   }
                   placeholder={
-                    this.state.passwordError == ''
+                    this.state.passwordError === ''
                       ? STRINGS.t('Password')
                       : this.state.passwordError
                   }
@@ -351,7 +321,7 @@ class Login extends Component {
                     this.setState({password: val, passwordError: ''})
                   }
                 />
-                {this.state.passwordError != '' ? (
+                {this.state.passwordError !== '' ? (
                   <Icon
                     onPress={() => this.onIconClick(this.state.passwordError)}
                     name="ios-alert"
@@ -360,7 +330,7 @@ class Login extends Component {
                 ) : null}
               </View>
               <View style={Styles.lineViewTextBox} />
-              {this.state.passwordError != '' ? (
+              {this.state.passwordError !== '' ? (
                 <View style={Styles.lineErrorView} />
               ) : (
                 <View style={Styles.lineView} />
@@ -376,41 +346,33 @@ class Login extends Component {
                 onPress={this.onLoginPress.bind(this)}>
                 <Text style={Styles.style_btnLogin}> {STRINGS.t('Login')}</Text>
               </TouchableOpacity>
-
               <View style={Styles.forgotContainer}>
                 <Text style={Styles.forgotStyles}> {STRINGS.t('Forgot')} </Text>
-
                 <TouchableOpacity
-                  onPress={this.moveToForgotUsername.bind(this)}>
+                  onPress={() => this.navigationTo('ForgotPasswordScreen')}>
                   <Text style={Styles.usernameAndPasswordStyles}>
-                    {' '}
                     {STRINGS.t('USERNAME')}
                   </Text>
                 </TouchableOpacity>
                 <Text style={Styles.slashStyle}> / </Text>
                 <TouchableOpacity
-                  onPress={this.moveToForgotPassword.bind(this)}>
+                  onPress={() => this.navigationTo('ForgotPasswordScreen')}>
                   <Text style={Styles.usernameAndPasswordStyles}>
-                    {' '}
                     {STRINGS.t('PASSWORD')}
                   </Text>
                 </TouchableOpacity>
               </View>
-
               <KeyboardSpacer />
             </View>
           </ScrollView>
-
           <View style={Styles.footerParent}>
             <View style={Styles.footerlineView} />
             <View style={Styles.footerContainer}>
               <Text style={Styles.memberStyles}>
-                {' '}
-                {STRINGS.t('Not_A_Member')}{' '}
+                {STRINGS.t('Not_A_Member')}
               </Text>
               <TouchableOpacity onPress={this.moveToSignUp.bind(this)}>
                 <Text style={Styles.usernameAndPasswordStyles}>
-                  {' '}
                   {STRINGS.t('SIGNUP')}
                 </Text>
               </TouchableOpacity>

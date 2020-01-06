@@ -1,5 +1,6 @@
-import React, {Component} from 'react';
-import {Text, View, AsyncStorage, Linking, Vibration} from 'react-native';
+/**
+ * @description Navigtion stack from react-navigation
+ */
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import Login from '../Containers/Login';
@@ -7,8 +8,8 @@ import SignUp from '../Containers/SignUp';
 import SignUp1 from '../Containers/SignUp1';
 import SignUp2 from '../Containers/SignUp2';
 // import Dashboard from '../Containers/Dashboard';
-// import ForgotPassword from '../Containers/ForgotPassword';
-// import ForgotUsername from '../Containers/ForgotUsername';
+import ForgotPassword from '../Containers/ForgotPassword';
+import ForgotUsername from '../Containers/ForgotUsername';
 // import BuyerCalculator from '../Containers/BuyerCalculator';
 // import AddressBook from '../Containers/AddressBook';
 // import Account from '../Containers/Account';
@@ -33,10 +34,13 @@ import SignUp2 from '../Containers/SignUp2';
 
 const PrimaryNav = createStackNavigator(
   {
-    LaunchScreen: {screen: Login},
+    LoginScreen: {screen: Login},
     SignUpScreen: {screen: SignUp},
     SignUp1Screen: {screen: SignUp1},
     SignUp2Screen: {screen: SignUp2},
+    // DashboardScreen: {screen: Dashboard},
+    ForgotPasswordScreen: {screen: ForgotPassword},
+    ForgotUsernameScreen: {screen: ForgotUsername},
     // CardScreen: { screen: CardScreen },
     // VideoScreen: { screen: VideoScreen },
     // MoreVideos: { screen: MoreVideos },
@@ -56,7 +60,7 @@ const PrimaryNav = createStackNavigator(
   {
     // Default config for all screens
     headerMode: 'none',
-    initialRouteName: 'LaunchScreen',
+    initialRouteName: 'LoginScreen',
     navigationOptions: {
       // headerStyle: styles.header,
     },

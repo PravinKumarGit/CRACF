@@ -22,12 +22,8 @@ export function callPostApi(urlStr, params, access_token) {
   })
     .then(response => response.json())
     .then(responseData => {
-      result = responseData;
-      /* if(result.status == 'success'){
-				if(result.data == ""){
-					result.status = 'fail';
-				}
-			} */
+      console.log(responseData, urlStr, params, access_token, 'callPostApi');
+      return responseData;
     })
     .catch(error => {
       console.error(error);
@@ -44,7 +40,8 @@ export function callGetApi(urlStr, params, access_token) {
   })
     .then(response => response.json())
     .then(responseData => {
-      result = responseData;
+      console.log(responseData, urlStr, params, access_token, 'callGetApi');
+      return responseData;
     })
     .catch(error => {
       console.error(error);
@@ -64,7 +61,14 @@ export function callGoogleDrivePostApi(urlStr, params, access_token) {
   })
     .then(response => response.json())
     .then(responseData => {
-      result = responseData;
+      console.log(
+        responseData,
+        urlStr,
+        params,
+        access_token,
+        'callGoogleDrivePostApi',
+      );
+      return responseData;
     })
     .catch(error => {
       console.error(error);

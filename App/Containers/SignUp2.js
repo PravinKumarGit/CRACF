@@ -1,22 +1,14 @@
-import React, {Component} from 'react';
+/**
+ * @description Sign up step 3
+ */
 
-import signUpStyles from './Styles/SignUpStyle'; // Import SignUpStyle.js class from Styles Folder to maintain UI.
-import loginStyles from './Styles/LoginScreenStyle'; // Import LoginScreenStyle.js class from Styles Folder to maintain UI.
-import Images from '../Themes/Images.js'; // Import Images.js class from Image Folder for images.
-import STRINGS from '../GlobalString/StringData'; // Import StringData.js class for string localization.
+import React, {Component} from 'react';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import Spinner from 'react-native-loading-spinner-overlay';
-import ModalDropdown from 'react-native-modal-dropdown';
-import Picker from 'react-native-picker';
-import Styles from './Styles/SellerStyleDesign';
-import ModalSelector from 'react-native-modal-selector';
-import DropdownAlert from 'react-native-dropdownalert';
-import {Container, Content, InputGroup, Input, Icon} from 'native-base';
-import {callGetApi, callPostApi} from '../Services/webApiHandler.js'; // Import webApiHandler.js class for calling api.
+import {Icon} from 'native-base';
 import {
   View,
   Text,
-  StyleSheet,
   Image,
   TextInput,
   Alert,
@@ -25,11 +17,26 @@ import {
   AsyncStorage,
   ImageBackground,
 } from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
+import {NavigationActions, StackActions} from 'react-navigation';
 
-var GLOBAL = require('../Constants/global');
-var Header = require('./HomeHeader');
+import signUpStyles from './Styles/SignUpStyle';
+import loginStyles from './Styles/LoginScreenStyle';
+import Images from '../Themes/Images';
+import STRINGS from '../GlobalString/StringData';
+import Styles from './Styles/SellerStyleDesign';
+import ModalSelector from 'react-native-modal-selector';
+import DropdownAlert from 'react-native-dropdownalert';
+import {callGetApi, callPostApi} from '../Services/webApiHandler.js';
+import GLOBAL from '../Constants/global';
 
+const NAVIGATION_TO_LOGIN = StackActions.reset({
+  index: 0,
+  actions: [
+    NavigationActions.navigate({
+      routeName: 'LoginScreen',
+    }),
+  ],
+});
 class SignUp2 extends Component {
   state = {
     mailing_address: '',
@@ -69,13 +76,13 @@ class SignUp2 extends Component {
     animating: 'false',
     visble: false,
   };
-  moveToPrevious() {
-    this.props.navigator.pop();
-  }
+  moveToPrevious = () => {
+    this.props.navigation.goBack();
+  };
 
-  moveToLoginScreen() {
-    this.props.navigator.popToTop();
-  }
+  moveToLoginScreen = () => {
+    this.props.navigation.dispatch(NAVIGATION_TO_LOGIN);
+  };
 
   updatePhoneNumberFormat(phone_number) {
     phone_number = phone_number
@@ -95,21 +102,17 @@ class SignUp2 extends Component {
       this.setState({
         mailingAddressError: STRINGS.t('mailing_address_char_error'),
       });
-      var errMsgFlag = '1';
     }
     if (this.state.city === '') {
       this.setState({cityError: STRINGS.t('city_error')});
     } else if (this.state.city.length < 2 || this.state.city.length > 120) {
       this.setState({cityError: STRINGS.t('city_char_error')});
-      var errMsgFlag = '1';
     }
     if (this.state.stateField === 'Select State') {
       this.setState({stateError: STRINGS.t('state_error')});
-      // this.dropdown.alertWithType('error', 'Error', STRINGS.t('state_error'));
     }
     if (this.state.countyId === '') {
       this.setState({countryError: STRINGS.t('country_error')});
-      //this.dropdown.alertWithType('error', 'Error', STRINGS.t('country_error'));
     }
     if (this.state.zip_code === '') {
       this.setState({zipCodeError: STRINGS.t('zip_code_error')});
@@ -118,7 +121,6 @@ class SignUp2 extends Component {
       this.setState({phoneNumberError: STRINGS.t('phone_number_error')});
     } else if (phone_number.length !== 10) {
       this.setState({phoneNumberError: STRINGS.t('phone_number_char_error')});
-      var errMsgFlag = '1';
     }
     if (this.state.office_address === '') {
       this.setState({officeAddressError: STRINGS.t('office_address_error')});
@@ -129,11 +131,9 @@ class SignUp2 extends Component {
       this.setState({
         officeAddressError: STRINGS.t('office_address_char_error'),
       });
-      var errMsgFlag = '1';
     }
     if (this.state.title_rep_id === '') {
       this.setState({titleRepError: STRINGS.t('title_rep_error')});
-      //this.dropdown.alertWithType('error', 'Error', STRINGS.t('title_rep_error'));
     }
     if (
       this.state.mailing_address !== '' &&
@@ -152,31 +152,11 @@ class SignUp2 extends Component {
     }
   }
   componentDidMount() {
-    NetInfo.isConnected.addEventListener(
-      'connectionChange',
-      this._handleConnectivityChange,
-    );
     this.callGetStatesApi();
   }
-  componentWillUnmount() {
-    NetInfo.isConnected.removeEventListener(
-      'connectionChange',
-      this._handleConnectivityChange,
-    );
-  }
-  _handleConnectivityChange(status) {
-    console.log(
-      '*********_handleConnectivityChange: Network Connectivity status *******: ' +
-        status,
-    );
-  }
 
-  // call state values for drop down
   callGetStatesApi() {
     callGetApi(GLOBAL.BASE_URL + GLOBAL.Get_States).then(response => {
-      //alert(JSON.stringify(result));
-
-      // Continue your code here...
       this.setState({
         stateArray: response.data,
       });
@@ -208,7 +188,6 @@ class SignUp2 extends Component {
     });
   }
 
-  // call county values for drop down
   callGetCountyApi(IDofState) {
     if (this.state.countItems !== '') {
       this.state.countItems = [];
@@ -276,7 +255,6 @@ class SignUp2 extends Component {
         countyName: country,
         zipCode: this.state.zip_code,
       }).then(result => {
-        // Continue your code here...
         if (result.status === 'Success') {
           if (
             this.state.stateField === 'Select State' &&
@@ -297,7 +275,6 @@ class SignUp2 extends Component {
           }
         } else {
           this.setState({zipCodeError: result.message});
-          //Alert.alert('Alert!', JSON.stringify(result));
         }
       });
     }
@@ -307,7 +284,6 @@ class SignUp2 extends Component {
     callPostApi(GLOBAL.BASE_URL + GLOBAL.Get_City_County_State, {
       zipCode: this.state.zip_code,
     }).then(result => {
-      // Continue your code here...
       if (result.status === 'success') {
         const dict = result.data.statecountycity;
         this.setState({country: dict.County});
@@ -370,13 +346,10 @@ class SignUp2 extends Component {
   }
 
   callSaveUserApi() {
-    // get values from Saved preferences
     AsyncStorage.getItem('UserInfoForReg1')
       .then(value => {
         var dict = JSON.parse(value);
         this.setState({animating: 'true'});
-        //Call Api for user saving
-
         callPostApi(GLOBAL.BASE_URL + GLOBAL.Save_User, {
           fname: dict.fname,
           lname: dict.lname,
@@ -394,10 +367,9 @@ class SignUp2 extends Component {
           drenmls: '',
           corporatenmls: '',
         }).then(result => {
-          //alert(JSON.stringify(result));
-          // Continue your code here...
           if (result.status === 'success') {
             this.dropdown.alertWithType('success', 'Success', result.message);
+            this.moveToLoginScreen();
           }
         });
       })
@@ -414,7 +386,6 @@ class SignUp2 extends Component {
       this.setState({
         [fieldName]: STRINGS.t('phone_number_char_error'),
       });
-      var errMsgFlag = '1';
     } else if (fieldVal !== '') {
       this.setState({
         [fieldName]: '',
@@ -574,7 +545,7 @@ class SignUp2 extends Component {
           <View style={Styles.header_view}>
             <TouchableOpacity
               style={Styles.back_icon_parent}
-              onPress={this.moveToPrevious.bind(this)}>
+              onPress={this.moveToPrevious}>
               <Image style={Styles.back_icon} source={Images.back_icon} />
             </TouchableOpacity>
             <Text style={Styles.header_title}>{STRINGS.t('SIGNUP')}</Text>
@@ -942,7 +913,7 @@ class SignUp2 extends Component {
             <Text style={loginStyles.memberStyles}>
               {STRINGS.t('Already_Registered')}{' '}
             </Text>
-            <TouchableOpacity onPress={this.moveToLoginScreen.bind(this)}>
+            <TouchableOpacity onPress={this.moveToLoginScreen}>
               <Text style={loginStyles.usernameAndPasswordStyles}>
                 {STRINGS.t('SIGNIN')}
               </Text>
