@@ -1,8 +1,5 @@
-<h1 align="center">
-  <a href="https://www.costsfirst.com/">
-    Costs Fisrt
-  </a>
-</h1>
+
+# Costs Fisrt
 
 ## 📋 Setup
 
